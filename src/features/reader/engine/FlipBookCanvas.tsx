@@ -54,7 +54,7 @@ export function FlipBookCanvas({ totalPages, renderPage }: FlipBookCanvasProps) 
     const { soundEnabled } = usePreferencesStore.getState();
     if (soundEnabled) {
       try {
-        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        const AudioContext = window.AudioContext || (window as unknown as { webkitAudioContext: typeof window.AudioContext }).webkitAudioContext;
         const ctx = new AudioContext();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -68,7 +68,7 @@ export function FlipBookCanvas({ totalPages, renderPage }: FlipBookCanvasProps) 
         gain.connect(ctx.destination);
         osc.start();
         osc.stop(ctx.currentTime + 0.15);
-      } catch (e) {
+      } catch {
         // Audio API not supported or blocked
       }
     }

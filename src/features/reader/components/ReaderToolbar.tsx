@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 import { AnimationStyle } from '@/types';
 
 interface ReaderToolbarProps {
@@ -24,9 +23,11 @@ export function ReaderToolbar({ bookTitle }: ReaderToolbarProps) {
   const { currentPage, totalPages, viewMode, setViewMode, setCurrentPage } = useReaderStore();
   const { animationStyle, setAnimationStyle } = usePreferencesStore();
 
-  const handlePageChange = (value: number[]) => {
-    setCurrentPage(value[0]);
+  const handlePageChange = (value: number | readonly number[]) => {
+    const page = Array.isArray(value) ? (value as number[])[0] : (value as number);
+    setCurrentPage(page);
   };
+
 
   const animationStyles: { value: AnimationStyle; label: string }[] = [
     { value: 'book', label: 'Classic Book' },

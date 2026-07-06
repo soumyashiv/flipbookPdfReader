@@ -8,10 +8,6 @@ export function cubicBezier(t: number, p1x: number, p1y: number, p2x: number, p2
   // but for our rAF loop a pre-calculated or precise solver is needed.
   
   // A simple accurate bezier solver
-  let a = 1.0;
-  let b = 1.0;
-  let c = 1.0;
-  
   function calcBezier(aT: number, aA1: number, aA2: number) {
     return ((A(aA1, aA2) * aT + B(aA1, aA2)) * aT + C(aA1)) * aT;
   }

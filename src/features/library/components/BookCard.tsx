@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { MoreVertical, Star, Trash, Edit3, BookOpen } from 'lucide-react';
+import { MoreVertical, Star, Trash, BookOpen } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import type { Book } from '@/types';
@@ -21,7 +21,6 @@ interface BookCardProps {
 }
 
 export function BookCard({ book, view }: BookCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [coverLoaded, setCoverLoaded] = useState(false);
 
@@ -115,8 +114,6 @@ export function BookCard({ book, view }: BookCardProps) {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
         className="book-card relative flex flex-col gap-3"
       >
         <div className="relative aspect-[1/1.4] w-full rounded-r-lg rounded-l-[3px] shadow-md transition-all duration-300 group-hover:shadow-xl overflow-hidden bg-pf-bg-subtle">

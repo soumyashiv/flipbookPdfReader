@@ -2,12 +2,6 @@ import { useState, useCallback } from 'react';
 import { useLibraryStore } from '@/store/useLibraryStore';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
-
-// We need to set up the worker for PDF.js to extract page count
-if (typeof window !== 'undefined') {
-  GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-}
 
 const MAX_SIZE = 50 * 1024 * 1024; // 50MB
 
@@ -44,8 +38,10 @@ export function useUpload() {
 
   const extractPageCount = async (file: File): Promise<number> => {
     try {
+      const pdfjs = await import('pdfjs-dist');
+      pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await getDocument(arrayBuffer).promise;
+      const pdf = await pdfjs.getDocument(arrayBuffer).promise;
       return pdf.numPages;
     } catch (err) {
       console.error('Error extracting page count:', err);
@@ -99,6 +95,9 @@ export function useUpload() {
       }
 
       setProgress(80);
+      if (!res.data?.id) {
+        throw new Error('Server returned success but no book ID');
+      }
       const bookId = res.data.id;
 
       // 2. Extract page count client-side (offloads server)

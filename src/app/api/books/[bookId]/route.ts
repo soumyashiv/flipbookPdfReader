@@ -35,16 +35,26 @@ export async function GET(
   }
 }
 
-// PATCH /api/books/[bookId] — Update title / favorite
+// PATCH /api/books/[bookId] — Update title / favorite / reading progress
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ bookId: string }> }
 ) {
   const { bookId } = await params;
   const body = await req.json();
+
+  // Route to reading-progress update if currentPage is provided
+  if (typeof body.currentPage === 'number') {
+    const { updateReadingProgress } = await import('@/lib/actions/books');
+    const result = await updateReadingProgress(bookId, body.currentPage);
+    return NextResponse.json(result, { status: result.success ? 200 : 500 });
+  }
+
+  // Otherwise update book metadata (title, isFavorite, etc.)
   const result = await updateBook(bookId, body);
   return NextResponse.json(result, { status: result.success ? 200 : 500 });
 }
+
 
 // DELETE /api/books/[bookId] — Delete book
 export async function DELETE(

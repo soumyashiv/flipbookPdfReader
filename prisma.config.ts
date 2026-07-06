@@ -3,7 +3,4 @@ import path from 'node:path';
 
 export default defineConfig({
   schema: path.join(import.meta.dirname, 'prisma/schema.prisma'),
-  datasource: {
-    url: process.env.DATABASE_URL ?? 'file:./prisma/dev.db',
-  },
 });

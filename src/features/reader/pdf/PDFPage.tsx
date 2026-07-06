@@ -16,7 +16,7 @@ export function PDFPage({ pdf, pageNumber, scale = 1.5, className, onRenderSucce
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [page, setPage] = useState<PDFPageProxy | null>(null);
   const [isRendered, setIsRendered] = useState(false);
-  const renderTaskRef = useRef<any>(null);
+  const renderTaskRef = useRef<ReturnType<PDFPageProxy['render']> | null>(null);
 
   // Load the page
   useEffect(() => {
@@ -54,6 +54,7 @@ export function PDFPage({ pdf, pageNumber, scale = 1.5, className, onRenderSucce
     canvas.style.height = '100%';
 
     const renderContext = {
+      canvas: canvas,
       canvasContext: ctx,
       viewport: viewport,
       background: 'white', // Ensure white background instead of transparent

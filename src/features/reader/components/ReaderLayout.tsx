@@ -14,7 +14,7 @@ interface ReaderLayoutProps {
 }
 
 export function ReaderLayout({ book }: ReaderLayoutProps) {
-  const { setBookId, setTotalPages, setCurrentPage } = useReaderStore();
+  const { currentPage, setBookId, setTotalPages, setCurrentPage } = useReaderStore();
   const { pdf, isLoading, error } = usePDFDocument(`/api/books/${book.id}`);
 
   // Initialize store with book data
@@ -37,14 +37,11 @@ export function ReaderLayout({ book }: ReaderLayoutProps) {
     if (!book.id || !pdf) return;
     
     const timeout = setTimeout(() => {
-      // Use fetch directly to avoid importing the server action if we're in a client component, 
-      // or we can just call a PUT endpoint
+      // Save reading progress via the PATCH books API
       fetch(`/api/books/${book.id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          progress: { currentPage, totalPages: pdf.numPages }
-        }),
+        body: JSON.stringify({ currentPage }),
       }).catch(console.error);
     }, 1000); // 1s debounce
 
