@@ -8,14 +8,52 @@ import { PDFPage } from '@/features/reader/pdf/PDFPage';
 import { Loader2 } from 'lucide-react';
 import type { Book } from '@/types';
 import { ReaderToolbar } from './ReaderToolbar';
+import { useRef } from 'react';
+import { useZoom } from '@/features/reader/hooks/useZoom';
+import { useFullscreen } from '@/features/reader/hooks/useFullscreen';
+import { useReadingTimer } from '@/features/reader/hooks/useReadingTimer';
+import { ReadingProgressBar } from './ReadingProgressBar';
+import { ZoomControls } from './ZoomControls';
+import { BookmarksPanel } from './BookmarksPanel';
+import { ThumbnailsPanel } from './ThumbnailsPanel';
+import { CommandPalette } from './CommandPalette';
+import { ShortcutsHelp } from './ShortcutsHelp';
+import { useKeyboardShortcuts } from '@/features/reader/hooks/useKeyboardShortcuts';
+import { usePreferencesStore } from '@/store/usePreferencesStore';
+import { useState } from 'react';
 
 interface ReaderLayoutProps {
   book: Book;
 }
 
 export function ReaderLayout({ book }: ReaderLayoutProps) {
-  const { currentPage, setBookId, setTotalPages, setCurrentPage } = useReaderStore();
+  const { currentPage, setBookId, setTotalPages, setCurrentPage, triggerFlip } = useReaderStore();
+  const { autoHideToolbar, readerTheme, pageBackground } = usePreferencesStore();
   const { pdf, isLoading, error } = usePDFDocument(`/api/books/${book.id}`);
+
+  // Ref for fullscreen & zoom bounding
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Phase 3 hooks
+  const { isFullscreen, toggle: toggleFullscreen } = useFullscreen(containerRef);
+  const zoom = useZoom(containerRef);
+  const timer = useReadingTimer();
+
+  // Phase 6 UI state
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isShortcutsHelpOpen, setIsShortcutsHelpOpen] = useState(false);
+
+  // Keyboard Shortcuts Hook
+  useKeyboardShortcuts(
+    toggleFullscreen,
+    zoom.zoomIn,
+    zoom.zoomOut,
+    zoom.resetZoom,
+    zoom.fitWidth,
+    triggerFlip,
+    setIsCommandPaletteOpen,
+    setIsShortcutsHelpOpen
+  );
 
   // Initialize store with book data
   useEffect(() => {
@@ -62,22 +100,63 @@ export function ReaderLayout({ book }: ReaderLayoutProps) {
   }
 
   return (
-    <div className="relative w-full h-screen bg-pf-bg-base overflow-hidden flex flex-col">
-      <ReaderToolbar bookTitle={book.title} />
+    <div 
+      ref={containerRef}
+      className={`relative w-full h-screen overflow-hidden flex flex-col ${readerTheme}`}
+    >
+      <ReadingProgressBar />
       
-      <main className="flex-1 relative overflow-hidden flex items-center justify-center">
+      <div className={`toolbar-autohide z-50 ${autoHideToolbar ? 'hover:opacity-100 opacity-0 absolute top-0 inset-x-0 transition-opacity' : 'relative'}`}>
+        <ReaderToolbar 
+          bookTitle={book.title} 
+          timer={timer}
+          isFullscreen={isFullscreen}
+          toggleFullscreen={toggleFullscreen}
+        />
+      </div>
+      
+      <main 
+        className="flex-1 relative overflow-hidden flex items-center justify-center bg-pf-bg-base"
+        onTouchStart={zoom.handleTouchStart}
+        onTouchMove={zoom.handleTouchMove}
+        onTouchEnd={zoom.handleTouchEnd}
+      >
         {isLoading || !pdf ? (
           <div className="flex flex-col items-center justify-center gap-4 text-pf-text-secondary">
             <Loader2 size={32} className="animate-spin text-pf-accent" />
             <p>Loading flipbook...</p>
           </div>
         ) : (
-          <FlipBookCanvas 
-            totalPages={pdf.numPages} 
-            renderPage={renderPage} 
-          />
+          <div 
+            className="zoom-container w-full h-full flex items-center justify-center"
+            style={{ transform: `scale(${zoom.zoomLevel})` }}
+          >
+            <FlipBookCanvas 
+              totalPages={pdf.numPages} 
+              renderPage={renderPage} 
+            />
+          </div>
         )}
+
+        <div className="absolute bottom-6 inset-x-0 flex justify-center pointer-events-none">
+          <div className="pointer-events-auto">
+            <ZoomControls {...zoom} />
+          </div>
+        </div>
+
+        <BookmarksPanel />
+        <ThumbnailsPanel />
       </main>
+
+      <CommandPalette 
+        isOpen={isCommandPaletteOpen} 
+        onClose={() => setIsCommandPaletteOpen(false)} 
+        toggleFullscreen={toggleFullscreen}
+      />
+      <ShortcutsHelp 
+        isOpen={isShortcutsHelpOpen} 
+        onClose={() => setIsShortcutsHelpOpen(false)} 
+      />
     </div>
   );
 }

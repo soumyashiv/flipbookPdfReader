@@ -24,6 +24,8 @@ interface ReaderState extends FlipBookState {
   closeSidebars: () => void;
   goToNextPage: () => void;
   goToPrevPage: () => void;
+  triggerFlip: (direction: 'forward' | 'backward') => void;
+  setTriggerFlip: (fn: (direction: 'forward' | 'backward') => void) => void;
   reset: () => void;
 }
 
@@ -33,6 +35,7 @@ const DEFAULT_STATE: FlipBookState & {
   isThumbnailsOpen: boolean;
   isBookmarksOpen: boolean;
   isSettingsOpen: boolean;
+  triggerFlip: (direction: 'forward' | 'backward') => void;
 } = {
   bookId: null,
   currentPage: 1,
@@ -46,6 +49,7 @@ const DEFAULT_STATE: FlipBookState & {
   isThumbnailsOpen: false,
   isBookmarksOpen: false,
   isSettingsOpen: false,
+  triggerFlip: () => {},
 };
 
 export const useReaderStore = create<ReaderState>()((set, get) => ({
@@ -63,6 +67,7 @@ export const useReaderStore = create<ReaderState>()((set, get) => ({
   setIsThumbnailsOpen: (isThumbnailsOpen) => set({ isThumbnailsOpen }),
   setIsBookmarksOpen: (isBookmarksOpen) => set({ isBookmarksOpen }),
   setIsSettingsOpen: (isSettingsOpen) => set({ isSettingsOpen }),
+  setTriggerFlip: (triggerFlip) => set({ triggerFlip }),
 
   closeSidebars: () =>
     set({

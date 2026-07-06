@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import type { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import { cn } from '@/utils/cn';
 
@@ -12,7 +12,7 @@ interface PDFPageProps {
   onRenderSuccess?: () => void;
 }
 
-export function PDFPage({ pdf, pageNumber, scale = 1.5, className, onRenderSuccess }: PDFPageProps) {
+export const PDFPage = memo(function PDFPage({ pdf, pageNumber, scale = 1.5, className, onRenderSuccess }: PDFPageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [page, setPage] = useState<PDFPageProxy | null>(null);
   const [isRendered, setIsRendered] = useState(false);
@@ -100,4 +100,4 @@ export function PDFPage({ pdf, pageNumber, scale = 1.5, className, onRenderSucce
       />
     </div>
   );
-}
+});

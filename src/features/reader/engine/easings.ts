@@ -42,6 +42,11 @@ const EasingCurves = {
   book: (t: number) => cubicBezier(t, 0.4, 0, 0.2, 1),
   notebook: (t: number) => cubicBezier(t, 0.34, 1.56, 0.64, 1),
   minimal: (t: number) => cubicBezier(t, 0.4, 0, 0.2, 1), // ease
+  softCurl: (t: number) => cubicBezier(t, 0.25, 0.1, 0.25, 1),
+  fastFlip: (t: number) => cubicBezier(t, 0.1, 0.9, 0.2, 1),
+  elasticFlip: (t: number) => cubicBezier(t, 0.68, -0.55, 0.265, 1.55),
+  vintagePaper: (t: number) => cubicBezier(t, 0.42, 0, 1, 1),
+  luxuryMagazine: (t: number) => cubicBezier(t, 0.25, 1, 0.5, 1),
 };
 
 export const AnimationStylesConfig = {
@@ -74,6 +79,36 @@ export const AnimationStylesConfig = {
     easing: EasingCurves.minimal,
     shadowIntensity: 0.1,
     curvature: 0, // Flat
+  },
+  softCurl: {
+    duration: 650,
+    easing: EasingCurves.softCurl,
+    shadowIntensity: 0.5,
+    curvature: 0.8, // Very high bend
+  },
+  fastFlip: {
+    duration: 200,
+    easing: EasingCurves.fastFlip,
+    shadowIntensity: 0.2,
+    curvature: 0.2, // Small bend
+  },
+  elasticFlip: {
+    duration: 550,
+    easing: EasingCurves.elasticFlip,
+    shadowIntensity: 0.4,
+    curvature: 0.4, // Bouncy
+  },
+  vintagePaper: {
+    duration: 800,
+    easing: EasingCurves.vintagePaper,
+    shadowIntensity: 0.7,
+    curvature: 0.6, // Heavy drag
+  },
+  luxuryMagazine: {
+    duration: 450,
+    easing: EasingCurves.luxuryMagazine,
+    shadowIntensity: 0.35,
+    curvature: 0.45, // Glossy bend
   },
 };
 

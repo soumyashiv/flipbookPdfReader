@@ -14,7 +14,7 @@ interface FlipBookCanvasProps {
 
 export function FlipBookCanvas({ totalPages, renderPage }: FlipBookCanvasProps) {
   const { currentPage, viewMode, setFlipState, setCurrentPage, setIsAnimating } = useReaderStore();
-  const { animationStyle } = usePreferencesStore();
+  const { animationStyle, animationSpeed, reducedMotion } = usePreferencesStore();
   
   const containerRef = useRef<HTMLDivElement>(null);
   const driverRef = useRef<AnimationDriver | null>(null);
@@ -74,7 +74,8 @@ export function FlipBookCanvas({ totalPages, renderPage }: FlipBookCanvasProps) 
     }
     
     const driver = new AnimationDriver(
-      animationStyle,
+      reducedMotion ? 'minimal' : animationStyle,
+      reducedMotion ? 1.5 : animationSpeed,
       (progress) => {
         setFlipProgress(progress);
         setFlipState({
@@ -93,6 +94,12 @@ export function FlipBookCanvas({ totalPages, renderPage }: FlipBookCanvasProps) 
     driver.animate(0, 1);
     
   }, [currentPage, totalPages, flippingPage, animationStyle, setIsAnimating, setFlipState, handleFlipComplete]);
+
+  // Register triggerFlip in global store
+  const { setTriggerFlip } = useReaderStore();
+  useEffect(() => {
+    setTriggerFlip(triggerFlip);
+  }, [setTriggerFlip, triggerFlip]);
 
   // Cleanup
   useEffect(() => {

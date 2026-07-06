@@ -26,6 +26,8 @@ export interface ReadingProgress {
   id: string;
   bookId: string;
   currentPage: number;
+  timeSpentSeconds: number;
+  lastOpenedAt: Date;
   updatedAt: Date;
 }
 
@@ -39,7 +41,14 @@ export type AnimationStyle =
   | 'magazine'
   | 'book'
   | 'notebook'
-  | 'minimal';
+  | 'minimal'
+  | 'softCurl'
+  | 'fastFlip'
+  | 'elasticFlip'
+  | 'vintagePaper'
+  | 'luxuryMagazine';
+
+export type ReaderTheme = 'dark' | 'light' | 'sepia' | 'paper' | 'amoled' | 'high-contrast';
 
 export interface AnimationConfig {
   style: AnimationStyle;
@@ -53,8 +62,10 @@ export type SoundPack = 'classic' | 'soft' | 'magazine';
 
 export interface ReaderPreferences {
   theme: 'dark' | 'light' | 'system';
+  readerTheme: ReaderTheme;
   zoomLevel: number;
   animationStyle: AnimationStyle;
+  animationSpeed: number; // 0.5x to 2x multiplier
   soundEnabled: boolean;
   soundPack: SoundPack;
   volume: number;
@@ -62,6 +73,8 @@ export interface ReaderPreferences {
   readingDirection: ReadingDirection;
   toolbarVisible: boolean;
   autoHideToolbar: boolean;
+  reducedMotion: boolean;
+  pageBackground: 'white' | 'cream' | 'gray';
 }
 
 // ─── Flip Engine Types ──────────────────────────────────────────────────────

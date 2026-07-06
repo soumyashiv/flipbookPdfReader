@@ -1,41 +1,31 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Monitor, BookOpen, Settings2 } from 'lucide-react';
+import { ArrowLeft, Monitor, BookOpen, Settings2, Maximize, Minimize, Clock, Bookmark, LayoutGrid } from 'lucide-react';
 import { useReaderStore } from '@/store/useReaderStore';
 import { usePreferencesStore } from '@/store/usePreferencesStore';
 import { Slider } from '@/components/ui/slider';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { AnimationStyle } from '@/types';
+import { SettingsPanel } from './SettingsPanel';
+
 
 interface ReaderToolbarProps {
   bookTitle: string;
+  timer?: { elapsedTimeFormatted: string; estimatedRemainingFormatted: string };
+  isFullscreen?: boolean;
+  toggleFullscreen?: () => void;
 }
 
-export function ReaderToolbar({ bookTitle }: ReaderToolbarProps) {
-  const { currentPage, totalPages, viewMode, setViewMode, setCurrentPage } = useReaderStore();
-  const { animationStyle, setAnimationStyle } = usePreferencesStore();
-
+export function ReaderToolbar({ bookTitle, timer, isFullscreen, toggleFullscreen }: ReaderToolbarProps) {
+  const { 
+    currentPage, totalPages, viewMode, setViewMode, setCurrentPage,
+    isBookmarksOpen, setIsBookmarksOpen,
+    isThumbnailsOpen, setIsThumbnailsOpen
+  } = useReaderStore();
+  
   const handlePageChange = (value: number | readonly number[]) => {
     const page = Array.isArray(value) ? (value as number[])[0] : (value as number);
     setCurrentPage(page);
   };
-
-
-  const animationStyles: { value: AnimationStyle; label: string }[] = [
-    { value: 'book', label: 'Classic Book' },
-    { value: 'magazine', label: 'Magazine (Soft)' },
-    { value: 'hardcover', label: 'Hardcover (Stiff)' },
-    { value: 'notebook', label: 'Notebook (Bouncy)' },
-    { value: 'minimal', label: 'Minimal (Flat)' },
-  ];
 
   return (
     <header className="h-16 flex items-center justify-between px-4 sm:px-6 bg-pf-bg-card border-b border-pf-border z-50">
@@ -46,9 +36,18 @@ export function ReaderToolbar({ bookTitle }: ReaderToolbarProps) {
         >
           <ArrowLeft size={20} />
         </Link>
-        <h1 className="font-semibold text-pf-text-primary line-clamp-1 max-w-[200px] sm:max-w-xs">
-          {bookTitle}
-        </h1>
+        <div>
+          <h1 className="font-semibold text-pf-text-primary line-clamp-1 max-w-[200px] sm:max-w-xs">
+            {bookTitle}
+          </h1>
+          {timer && (
+            <div className="flex items-center gap-2 text-[10px] font-medium text-pf-text-tertiary mt-0.5">
+              <span className="flex items-center gap-1"><Clock size={10} /> {timer.elapsedTimeFormatted}</span>
+              <span>•</span>
+              <span>{timer.estimatedRemainingFormatted} left</span>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="hidden sm:flex flex-1 max-w-md mx-8 items-center gap-4">
@@ -71,6 +70,25 @@ export function ReaderToolbar({ bookTitle }: ReaderToolbarProps) {
       <div className="flex items-center gap-2">
         <div className="hidden sm:flex items-center bg-pf-bg-subtle p-1 rounded-lg mr-2">
           <button
+            onClick={() => setIsThumbnailsOpen(!isThumbnailsOpen)}
+            className={`p-1.5 rounded-md transition-colors ${isThumbnailsOpen ? 'bg-pf-bg-elevated shadow-sm text-pf-accent' : 'text-pf-text-tertiary hover:text-pf-text-secondary'}`}
+            title="Pages"
+          >
+            <LayoutGrid size={16} />
+          </button>
+          <button
+            onClick={() => setIsBookmarksOpen(!isBookmarksOpen)}
+            className={`p-1.5 rounded-md transition-colors ${isBookmarksOpen ? 'bg-pf-bg-elevated shadow-sm text-pf-accent' : 'text-pf-text-tertiary hover:text-pf-text-secondary'}`}
+            title="Bookmarks"
+          >
+            <Bookmark size={16} />
+          </button>
+        </div>
+
+        <div className="hidden md:flex w-px h-6 bg-pf-border mx-1" />
+
+        <div className="hidden sm:flex items-center bg-pf-bg-subtle p-1 rounded-lg mr-2">
+          <button
             onClick={() => setViewMode('single')}
             className={`p-1.5 rounded-md transition-colors ${viewMode === 'single' ? 'bg-pf-bg-elevated shadow-sm text-pf-text-primary' : 'text-pf-text-tertiary hover:text-pf-text-secondary'}`}
             title="Single Page View"
@@ -86,24 +104,17 @@ export function ReaderToolbar({ bookTitle }: ReaderToolbarProps) {
           </button>
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 h-9 w-9 bg-transparent border border-pf-border hover:bg-pf-bg-subtle text-pf-text-secondary">
-            <Settings2 size={18} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56 bg-pf-bg-elevated border-pf-border">
-            <DropdownMenuLabel>Animation Style</DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-pf-border" />
-            {animationStyles.map((style) => (
-              <DropdownMenuItem
-                key={style.value}
-                onClick={() => setAnimationStyle(style.value)}
-                className={`cursor-pointer ${animationStyle === style.value ? 'text-pf-accent bg-pf-accent/10' : ''}`}
-              >
-                {style.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <SettingsPanel />
+
+        {toggleFullscreen && (
+          <button
+            onClick={toggleFullscreen}
+            className="p-1.5 rounded-md text-pf-text-tertiary hover:text-pf-text-primary transition-colors bg-pf-bg-subtle hover:bg-pf-bg-elevated border border-transparent hover:border-pf-border"
+            title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+          >
+            {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+          </button>
+        )}
       </div>
     </header>
   );

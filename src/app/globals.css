@@ -119,6 +119,86 @@
   --pf-shadow-page:    -8px 0 24px rgba(0,0,0,0.15), -4px 0 8px rgba(0,0,0,0.08);
 }
 
+/* Sepia Mode */
+.sepia {
+  --pf-bg-base:        #f4ede0;
+  --pf-bg-elevated:    #fdf6e3;
+  --pf-bg-overlay:     #ede4d0;
+  --pf-bg-card:        #fdf6e3;
+  --pf-bg-subtle:      #e8dcc8;
+  --pf-border:         rgba(100,60,0,0.12);
+  --pf-border-strong:  rgba(100,60,0,0.22);
+  --pf-text-primary:   #3d2b1f;
+  --pf-text-secondary: #6b4f3a;
+  --pf-text-tertiary:  #9c7a60;
+  --pf-text-disabled:  #c4a882;
+  --pf-accent:         #c07834;
+  --pf-accent-from:    #c07834;
+  --pf-accent-to:      #a05c1c;
+  --pf-accent-dim:     rgba(192,120,52,0.15);
+  --pf-accent-glow:    rgba(192,120,52,0.3);
+  --pf-shadow-sm:      0 1px 3px rgba(80,40,0,0.10);
+  --pf-shadow-md:      0 4px 16px rgba(80,40,0,0.12);
+  --pf-shadow-lg:      0 8px 32px rgba(80,40,0,0.15);
+  --pf-shadow-xl:      0 20px 60px rgba(80,40,0,0.18);
+  --pf-shadow-page:    -8px 0 24px rgba(80,40,0,0.15);
+}
+
+/* Paper Mode */
+.paper {
+  --pf-bg-base:        #f8f5f0;
+  --pf-bg-elevated:    #ffffff;
+  --pf-bg-overlay:     #f0ece5;
+  --pf-bg-card:        #ffffff;
+  --pf-bg-subtle:      #ece8e1;
+  --pf-border:         rgba(0,0,0,0.08);
+  --pf-border-strong:  rgba(0,0,0,0.16);
+  --pf-text-primary:   #1a1a2e;
+  --pf-text-secondary: #4a4a6a;
+  --pf-text-tertiary:  #8a8aaa;
+  --pf-text-disabled:  #c4c4d4;
+  --pf-shadow-sm:      0 1px 3px rgba(0,0,0,0.08);
+  --pf-shadow-md:      0 4px 16px rgba(0,0,0,0.09);
+  --pf-shadow-lg:      0 8px 32px rgba(0,0,0,0.11);
+  --pf-shadow-xl:      0 20px 60px rgba(0,0,0,0.13);
+  --pf-shadow-page:    -8px 0 24px rgba(0,0,0,0.12);
+}
+
+/* AMOLED / True Black Mode */
+.amoled {
+  --pf-bg-base:        #000000;
+  --pf-bg-elevated:    #0a0a0a;
+  --pf-bg-overlay:     #0d0d0d;
+  --pf-bg-card:        #111111;
+  --pf-bg-subtle:      #181818;
+  --pf-border:         rgba(255,255,255,0.04);
+  --pf-border-strong:  rgba(255,255,255,0.09);
+  --pf-text-primary:   #ffffff;
+  --pf-text-secondary: #aaaaaa;
+  --pf-text-tertiary:  #555555;
+  --pf-shadow-sm:      0 1px 3px rgba(0,0,0,0.8);
+  --pf-shadow-md:      0 4px 16px rgba(0,0,0,0.9);
+  --pf-shadow-lg:      0 8px 32px rgba(0,0,0,0.95);
+  --pf-shadow-xl:      0 20px 60px rgba(0,0,0,1);
+}
+
+/* High Contrast */
+.high-contrast {
+  --pf-bg-base:        #000000;
+  --pf-bg-elevated:    #1a1a1a;
+  --pf-bg-card:        #1a1a1a;
+  --pf-bg-subtle:      #2a2a2a;
+  --pf-border:         rgba(255,255,255,0.4);
+  --pf-border-strong:  rgba(255,255,255,0.7);
+  --pf-text-primary:   #ffffff;
+  --pf-text-secondary: #eeeeee;
+  --pf-text-tertiary:  #cccccc;
+  --pf-accent:         #ffff00;
+  --pf-accent-from:    #ffff00;
+  --pf-accent-to:      #ffcc00;
+  --pf-accent-dim:     rgba(255,255,0,0.2);
+}
+
 /* ─── Tailwind v4 Theme Extension ──────────────────────────────────────────── */
 @theme inline {
   --font-sans:        var(--font-sans);

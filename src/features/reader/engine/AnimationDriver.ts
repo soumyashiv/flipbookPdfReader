@@ -9,6 +9,7 @@ export class AnimationDriver {
   private startTime: number = 0;
   private startProgress: number = 0;
   private targetProgress: number = 1;
+  private baseDuration: number = 500;
   private duration: number = 500;
   private easingFn: (t: number) => number;
   private onTick: AnimationCallback;
@@ -16,19 +17,22 @@ export class AnimationDriver {
 
   constructor(
     style: AnimationStyle,
+    speedMultiplier: number,
     onTick: AnimationCallback,
     onComplete: CompletionCallback
   ) {
     const config = AnimationStylesConfig[style] || AnimationStylesConfig.book;
-    this.duration = config.duration;
+    this.baseDuration = config.duration;
+    this.duration = this.baseDuration / speedMultiplier;
     this.easingFn = config.easing;
     this.onTick = onTick;
     this.onComplete = onComplete;
   }
 
-  public setStyle(style: AnimationStyle) {
+  public setStyle(style: AnimationStyle, speedMultiplier: number) {
     const config = AnimationStylesConfig[style] || AnimationStylesConfig.book;
-    this.duration = config.duration;
+    this.baseDuration = config.duration;
+    this.duration = this.baseDuration / speedMultiplier;
     this.easingFn = config.easing;
   }
 
